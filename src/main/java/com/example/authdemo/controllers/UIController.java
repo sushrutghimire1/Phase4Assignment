@@ -4,7 +4,10 @@ import com.example.authdemo.models.AuthenticationRequest;
 import com.example.authdemo.models.AuthenticationResponse;
 import com.example.authdemo.models.FileDescriptionResponse;
 import com.example.authdemo.models.ResponseMessage;
-import com.example.authdemo.repository.entities.*;
+import com.example.authdemo.repository.entities.FileEntity;
+import com.example.authdemo.repository.entities.SourceDescriptionEntity;
+import com.example.authdemo.repository.entities.SourceFileEntity;
+import com.example.authdemo.repository.entities.TargetDescriptionEntity;
 import com.example.authdemo.services.*;
 import com.example.authdemo.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +20,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -110,7 +112,7 @@ public class UIController {
         if (username == null) {
             throw new RuntimeException("Invalid username");
         }
-        return ResponseEntity.ok(this.sourceCSVService.getSourceFileEntities(username));
+        return ResponseEntity.ok(this.sourceCSVService.getMatchingFileEntities(username));
     }
 
     @GetMapping("mismatch/{username}")
@@ -118,7 +120,7 @@ public class UIController {
         if (username == null) {
             throw new RuntimeException("Invalid username");
         }
-        return ResponseEntity.ok(this.targetCSVService.getFileEntities(username));
+        return ResponseEntity.ok(this.sourceCSVService.getMismatchedFileEntities(username));
     }
 
     @GetMapping("missing/{username}")
@@ -126,15 +128,9 @@ public class UIController {
         if (username == null) {
             throw new RuntimeException("Invalid username");
         }
-        List<TargetFileEntity> targetFileEntities = new ArrayList<>(this.targetCSVService.getAll(username));
-        List<FileEntity> resultant = new ArrayList<>();
-        targetFileEntities.forEach(fileEntity -> {
-            if (fileEntity.getSourceFileEntity() == null) {
-                resultant.add(fileEntity);
-            }
-        });
-        return ResponseEntity.ok(resultant);
+        return ResponseEntity.ok(this.targetCSVService.getMissingFileEntities(username));
     }
+
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)

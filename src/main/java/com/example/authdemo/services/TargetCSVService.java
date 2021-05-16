@@ -35,18 +35,20 @@ public class TargetCSVService {
         }
     }
 
-    public List<FileEntity> getFileEntities(String username) {
-        List<TargetFileEntity> sourceFileEntities = new ArrayList<>(this.getAll(username));
+
+
+    public List<TargetFileEntity> getAll(String username) {
+        return repository.findByUsername(username);
+    }
+
+    public List<FileEntity> getMissingFileEntities(String username) {
+        List<TargetFileEntity> targetFileEntities = new ArrayList<>(this.getAll(username));
         List<FileEntity> resultant = new ArrayList<>();
-        sourceFileEntities.forEach(fileEntity -> {
+        targetFileEntities.forEach(fileEntity -> {
             if (fileEntity.getSourceFileEntity() == null) {
                 resultant.add(fileEntity);
             }
         });
         return resultant;
-    }
-
-    public List<TargetFileEntity> getAll(String username) {
-        return repository.findByUsername(username);
     }
 }

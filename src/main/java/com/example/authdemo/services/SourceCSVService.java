@@ -1,6 +1,7 @@
 package com.example.authdemo.services;
 
 import com.example.authdemo.repository.SourceFileRepository;
+import com.example.authdemo.repository.entities.FileEntity;
 import com.example.authdemo.repository.entities.SourceFileEntity;
 import com.example.authdemo.util.SourceCSVHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class SourceCSVService {
         }
     }
 
-    public ArrayList<SourceFileEntity> getSourceFileEntities(String username) {
+    public ArrayList<SourceFileEntity> getMatchingFileEntities(String username) {
         List<SourceFileEntity> sourceFileEntities = new ArrayList<>(this.getAll(username));
         ArrayList<SourceFileEntity> fileEntities = new ArrayList<>();
         sourceFileEntities.forEach(fileEntity -> {
@@ -41,6 +42,17 @@ public class SourceCSVService {
                 fileEntities.add(fileEntity);
         });
         return fileEntities;
+    }
+
+    public List<FileEntity> getMismatchedFileEntities(String username) {
+        List<SourceFileEntity> sourceFileEntities = new ArrayList<>(this.getAll(username));
+        List<FileEntity> resultant = new ArrayList<>();
+        sourceFileEntities.forEach(fileEntity -> {
+            if (fileEntity.getTargetFileEntity() == null) {
+                resultant.add(fileEntity);
+            }
+        });
+        return resultant;
     }
 
     public List<SourceFileEntity> getAll(String username) {
