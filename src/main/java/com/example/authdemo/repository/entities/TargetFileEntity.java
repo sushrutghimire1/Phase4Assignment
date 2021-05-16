@@ -1,58 +1,33 @@
 package com.example.authdemo.repository.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.util.Date;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity(name = "target_file")
-public class TargetFileEntity {
-    @Id
-    private String transactionId;
-    private double amount;
-    private String currency;
-    private Date valueDate;
+public class TargetFileEntity extends FileEntity{
 
-    public TargetFileEntity(String transactionId, double amount, String currency, Date valueDate) {
-        this.transactionId = transactionId;
-        this.amount = amount;
-        this.currency = currency;
-        this.valueDate = valueDate;
+    public TargetFileEntity(String transactionId, double amount, String currency, String valueDate) {
+        super(transactionId, amount, currency, valueDate);
     }
 
     public TargetFileEntity() {
-
     }
 
-    public String getTransactionId() {
-        return transactionId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    @JoinColumn(name = "transaction_id", referencedColumnName = "transaction_id")
+    private SourceFileEntity sourceFileEntity;
+
+    public SourceFileEntity getSourceFileEntity() {
+        return sourceFileEntity;
     }
 
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public Date getValueDate() {
-        return valueDate;
-    }
-
-    public void setValueDate(Date valueDate) {
-        this.valueDate = valueDate;
+    public void setSourceFileEntity(SourceFileEntity sourceFileEntity) {
+        this.sourceFileEntity = sourceFileEntity;
     }
 }

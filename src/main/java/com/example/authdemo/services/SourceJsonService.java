@@ -2,45 +2,36 @@ package com.example.authdemo.services;
 
 import com.example.authdemo.repository.SourceFileRepository;
 import com.example.authdemo.repository.entities.SourceFileEntity;
-import com.example.authdemo.util.SourceCSVHelper;
+import com.example.authdemo.util.SourceJsonHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Transactional
-public class SourceCSVService {
+public class SourceJsonService {
 
     private final SourceFileRepository repository;
 
     @Autowired
-    public SourceCSVService(SourceFileRepository repository) {
+    public SourceJsonService(SourceFileRepository repository) {
         this.repository = repository;
     }
 
     public void save(String username, MultipartFile file) {
         try {
-            List<SourceFileEntity> fileEntities = SourceCSVHelper.csvToTargetFile(username, file.getInputStream());
+            List<SourceFileEntity> fileEntities = SourceJsonHelper.jsonToSourceFile(username, file.getInputStream());
             repository.deleteByUsername(username);
+            if (fileEntities == null)
+                throw new IOException("fail to store json data: ");
             repository.saveAll(fileEntities);
         } catch (IOException e) {
-            throw new RuntimeException("fail to store csv data: " + e.getMessage());
+            throw new RuntimeException("fail to store json data: " + e.getMessage());
         }
-    }
-
-    public ArrayList<SourceFileEntity> getSourceFileEntities(String username) {
-        List<SourceFileEntity> sourceFileEntities = new ArrayList<>(this.getAll(username));
-        ArrayList<SourceFileEntity> fileEntities = new ArrayList<>();
-        sourceFileEntities.forEach(fileEntity -> {
-            if (fileEntity.getTargetFileEntity() != null)
-                fileEntities.add(fileEntity);
-        });
-        return fileEntities;
     }
 
     public List<SourceFileEntity> getAll(String username) {

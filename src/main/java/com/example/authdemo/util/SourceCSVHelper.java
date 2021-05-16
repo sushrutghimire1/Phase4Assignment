@@ -10,8 +10,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,27 +20,27 @@ public class SourceCSVHelper {
         return TYPE.equals(file.getContentType());
     }
 
-    public static List<SourceFileEntity> csvToTargetFile(InputStream is) {
+    public static List<SourceFileEntity> csvToTargetFile(String username, InputStream is) {
         try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
              CSVParser csvParser = new CSVParser(fileReader,
                      CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());) {
 
-            List<SourceFileEntity> tutorials = new ArrayList<SourceFileEntity>();
+            List<SourceFileEntity> fileEntities = new ArrayList<SourceFileEntity>();
 
             Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 
             for (CSVRecord csvRecord : csvRecords) {
-                SourceFileEntity tutorial = new SourceFileEntity(
+                SourceFileEntity fileEntity = new SourceFileEntity(
                         csvRecord.get("transactionId"),
                         Double.parseDouble(csvRecord.get("amount")),
                         csvRecord.get("currency"),
-                        new SimpleDateFormat("yyyy-MM-dd").parse(csvRecord.get("Published"))
+                        csvRecord.get("valueDate")
                 );
-
-                tutorials.add(tutorial);
+                fileEntity.setUsername(username);
+                fileEntities.add(fileEntity);
             }
-            return tutorials;
-        } catch (IOException | ParseException e) {
+            return fileEntities;
+        } catch (IOException e) {
             throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
         }
     }

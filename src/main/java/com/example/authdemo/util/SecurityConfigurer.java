@@ -1,4 +1,4 @@
-package com.example.authdemo;
+package com.example.authdemo.util;
 
 import com.example.authdemo.filters.JwtRequestFilter;
 import com.example.authdemo.services.MyUserDetailsService;
