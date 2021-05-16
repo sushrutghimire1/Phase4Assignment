@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class TargetJsonService {
+public class TargetJsonService implements JSONStorageService{
 
     private final TargetFileRepository repository;
 

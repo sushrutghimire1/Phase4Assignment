@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class TargetCSVService {
+public class TargetCSVService implements CSVStorageService{
 
     private final TargetFileRepository repository;
 
