@@ -4,10 +4,7 @@ import com.example.authdemo.models.AuthenticationRequest;
 import com.example.authdemo.models.AuthenticationResponse;
 import com.example.authdemo.models.FileDescriptionResponse;
 import com.example.authdemo.models.ResponseMessage;
-import com.example.authdemo.repository.entities.FileEntity;
-import com.example.authdemo.repository.entities.SourceDescriptionEntity;
-import com.example.authdemo.repository.entities.SourceFileEntity;
-import com.example.authdemo.repository.entities.TargetDescriptionEntity;
+import com.example.authdemo.repository.entities.*;
 import com.example.authdemo.services.*;
 import com.example.authdemo.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +30,13 @@ public class UIController {
     private final SourceJsonService sourceJsonService;
     private final TargetJsonService targetJsonService;
     private final DescriptionService descriptionService;
+    private final ReconciliationService reconciliationService;
 
     @Autowired
     public UIController(AuthenticationManager authenticationManager, MyUserDetailsService userDetailsService,
                         JwtUtil jwtUtil, SourceCSVService sourceCSVService, TargetCSVService targetCSVService,
                         SourceJsonService sourceJsonService, TargetJsonService targetJsonService,
-                        DescriptionService descriptionService) {
+                        DescriptionService descriptionService, ReconciliationService reconciliationService, ReconciliationService reconciliationService1) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
@@ -47,6 +45,7 @@ public class UIController {
         this.sourceJsonService = sourceJsonService;
         this.targetJsonService = targetJsonService;
         this.descriptionService = descriptionService;
+        this.reconciliationService = reconciliationService1;
     }
 
     @PostMapping("csv-source/upload/{username}")
@@ -106,6 +105,14 @@ public class UIController {
         return ResponseEntity.ok(this.descriptionService.getFileDescriptionResponse(username));
     }
 
+    @GetMapping("reconciliation/{username}")
+    public ResponseEntity<List<ReconciliationEntity>> getReconciliation(@PathVariable String username) {
+        if (username == null) {
+            throw new RuntimeException("Invalid username");
+        }
+        return ResponseEntity.ok(this.reconciliationService.getAllReconciliations(username));
+    }
+
 
     @GetMapping("matching/{username}")
     public ResponseEntity<List<SourceFileEntity>> getMatching(@PathVariable String username) {
@@ -144,6 +151,7 @@ public class UIController {
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
+        this.reconciliationService.updateReconciliation(authenticationRequest.getUsername());
         return ResponseEntity.ok(new AuthenticationResponse(jwt, authenticationRequest.getUsername()));
     }
 

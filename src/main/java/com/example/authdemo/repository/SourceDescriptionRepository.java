@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface SourceDescriptionRepository extends JpaRepository<SourceDescriptionEntity, Integer> {
+public interface SourceDescriptionRepository extends JpaRepository<SourceDescriptionEntity, String> {
     void deleteByUsername(String username);
 
     List<SourceDescriptionEntity> findByUsername(String username);

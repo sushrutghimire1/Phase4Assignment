@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Transactional
-public interface SourceFileRepository extends JpaRepository<SourceFileEntity, Integer> {
+public interface SourceFileRepository extends JpaRepository<SourceFileEntity, String> {
     void deleteByUsername(String username);
 
     List<SourceFileEntity> findByUsername(String username);
