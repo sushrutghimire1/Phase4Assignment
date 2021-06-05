@@ -1,64 +1,54 @@
 package com.example.authdemo.repository.entities;
 
+import com.example.authdemo.models.FileDescriptionInfo;
+import com.example.authdemo.models.FileInfo;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-@MappedSuperclass
-public abstract class FileEntity{
-    @Id
-    @Column(name = "transaction_id")
-    private String transactionId;
-    @Column(name = "amount")
-    private double amount;
-    @Column(name = "currency")
-    private String currency;
-    @Column(name = "value_date")
-    private String valueDate;
-    @Column(name = "username")
-    private String username;
+import java.util.List;
 
-    public FileEntity(String transactionId, double amount, String currency, String valueDate) {
-        this.transactionId = transactionId;
-        this.amount = amount;
-        this.currency = currency;
-        this.valueDate = valueDate;
-    }
+@Entity(name = "file_info")
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+public class FileEntity {
+    @Id
+    @Column(name = "id")
+    String id;
+
+    @Column(name = "username")
+    String username;
+
+    @Column(name = "target_file")
+    @Type(type = "jsonb")
+    List<FileInfo> targetFile;
+
+    @Column(name = "target_description")
+    @Type(type = "jsonb")
+    FileDescriptionInfo targetDescription;
+
+    @Column(name = "source_file")
+    @Type(type = "jsonb")
+    List<FileInfo> sourceFile;
+
+    @Column(name = "source_description")
+    @Type(type = "jsonb")
+    FileDescriptionInfo sourceDescription;
+
+    @Column(name = "timestamp")
+    String time;
 
     public FileEntity() {
-
     }
 
-    public String getTransactionId() {
-        return transactionId;
+    public String getId() {
+        return id;
     }
 
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public String getValueDate() {
-        return valueDate;
-    }
-
-    public void setValueDate(String valueDate) {
-        this.valueDate = valueDate;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -67,5 +57,45 @@ public abstract class FileEntity{
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public List<FileInfo> getTargetFile() {
+        return targetFile;
+    }
+
+    public void setTargetFile(List<FileInfo> targetFile) {
+        this.targetFile = targetFile;
+    }
+
+    public FileDescriptionInfo getTargetDescription() {
+        return targetDescription;
+    }
+
+    public void setTargetDescription(FileDescriptionInfo targetDescription) {
+        this.targetDescription = targetDescription;
+    }
+
+    public List<FileInfo> getSourceFile() {
+        return sourceFile;
+    }
+
+    public void setSourceFile(List<FileInfo> sourceFile) {
+        this.sourceFile = sourceFile;
+    }
+
+    public FileDescriptionInfo getSourceDescription() {
+        return sourceDescription;
+    }
+
+    public void setSourceDescription(FileDescriptionInfo sourceDescription) {
+        this.sourceDescription = sourceDescription;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

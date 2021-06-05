@@ -6,8 +6,7 @@ import javax.persistence.*;
 @Entity(name = "reconciliation")
 public class ReconciliationEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+    String id;
     @Column(name = "username")
     private String username;
     @Column(name = "action")
@@ -15,11 +14,14 @@ public class ReconciliationEntity {
     @Column(name = "timestamp")
     private String timestamp;
 
-    public Long getId() {
+    public ReconciliationEntity() {
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -1,7 +1,7 @@
 package com.example.authdemo.util;
 
 import com.example.authdemo.filters.JwtRequestFilter;
-import com.example.authdemo.services.MyUserDetailsService;
+import com.example.authdemo.services.AuthUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,11 +17,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
-    private final MyUserDetailsService myUserDetailService;
+    private final AuthUserDetailsService myUserDetailService;
     private final JwtRequestFilter jwtRequestFilter;
 
     @Autowired
-    public SecurityConfigurer(MyUserDetailsService myUserDetailService, JwtRequestFilter jwtRequestFilter) {
+    public SecurityConfigurer(AuthUserDetailsService myUserDetailService, JwtRequestFilter jwtRequestFilter) {
         this.myUserDetailService = myUserDetailService;
         this.jwtRequestFilter = jwtRequestFilter;
     }
