@@ -74,7 +74,7 @@ public class FileServiceImpl implements FileService {
         resultantFileEntity.setTimestamp(time);
         resultantFileEntity.setMatch(matchingFileInfos(sourceFiles, targetFiles));
         resultantFileEntity.setMissing(missingFileInfos(sourceFiles, targetFiles));
-        resultantFileEntity.setMismatch(missingFileInfos(targetFiles, sourceFiles));
+        resultantFileEntity.setMismatch(misMatchingFileInfos(targetFiles, sourceFiles));
         resultantFileRepository.save(resultantFileEntity);
     }
 
@@ -95,12 +95,30 @@ public class FileServiceImpl implements FileService {
         List<FileInfo> matching = new ArrayList<>();
         for (FileInfo source : sourceInfos) {
             for (FileInfo target : targetInfos) {
-                if (source.getTransactionId().equals(target.getTransactionId())) {
+                if (source.getTransactionId().equals(target.getTransactionId())
+                   && source.getAmount() == target.getAmount()
+                   && source.getCurrency().equals(target.getCurrency())
+                   && source.getValueDate().equals(target.getValueDate())) {
                     matching.add(source);
                 }
             }
         }
         return matching;
+    }
+
+    private List<FileInfo> misMatchingFileInfos(List<FileInfo> sourceInfos, List<FileInfo> targetInfos) {
+        List<FileInfo> misMatching = new ArrayList<>();
+        for (FileInfo source : sourceInfos) {
+            for (FileInfo target : targetInfos) {
+                if (source.getTransactionId().equals(target.getTransactionId())
+                        && (source.getAmount() != target.getAmount()
+                        || !source.getCurrency().equals(target.getCurrency())
+                        || !source.getValueDate().equals(target.getValueDate()))) {
+                    misMatching.add(source);
+                }
+            }
+        }
+        return misMatching;
     }
 
     private List<FileInfo> missingFileInfos(List<FileInfo> sourceInfos, List<FileInfo> targetInfos) {
